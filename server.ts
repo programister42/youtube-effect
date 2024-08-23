@@ -1,8 +1,8 @@
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { APP_BASE_HREF } from "@angular/common";
 import { CommonEngine } from "@angular/ssr";
 import express from "express";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import bootstrap from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -48,7 +48,8 @@ export function app(): express.Express {
 }
 
 function run(): void {
-	const port = process.env.PORT || 4000;
+	// biome-ignore lint/complexity/useLiteralKeys: TS4111: Property 'PORT' comes from an index signature, so it must be accessed with ['PORT']. [plugin angular-compiler]
+	const port = process.env["PORT"] || 4000;
 
 	// Start up the Node server
 	const server = app();
