@@ -4,13 +4,13 @@ import {
 } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
-import { provideClientHydration } from "@angular/platform-browser";
 import { routes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideExperimentalZonelessChangeDetection(),
 		provideRouter(routes),
-		provideClientHydration(),
+		// hydration is not yet fully supported with zoneless change detection
+		// provideClientHydration(),
 	],
 };
