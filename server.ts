@@ -1,23 +1,23 @@
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { APP_BASE_HREF } from "@angular/common";
-import { CommonEngine } from "@angular/ssr";
-import express from "express";
-import { API_PATHS } from "./src/app/constants/api-paths";
-import type { Video } from "./src/app/types/video.interface";
-import bootstrap from "./src/main.server";
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { APP_BASE_HREF } from '@angular/common';
+import { CommonEngine } from '@angular/ssr';
+import express from 'express';
+import { API_PATHS } from './src/app/constants/api-paths';
+import type { Video } from './src/app/types/video.interface';
+import bootstrap from './src/main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
 	const server = express();
 	const serverDistFolder = dirname(fileURLToPath(import.meta.url));
-	const browserDistFolder = resolve(serverDistFolder, "../browser");
-	const indexHtml = join(serverDistFolder, "index.server.html");
+	const browserDistFolder = resolve(serverDistFolder, '../browser');
+	const indexHtml = join(serverDistFolder, 'index.server.html');
 
 	const commonEngine = new CommonEngine();
 
-	server.set("view engine", "html");
-	server.set("views", browserDistFolder);
+	server.set('view engine', 'html');
+	server.set('views', browserDistFolder);
 
 	// Example Express Rest API endpoints
 	// server.get('/api/**', (req, res) => { });
@@ -33,15 +33,15 @@ export function app(): express.Express {
 
 	// Serve static files from /browser
 	server.get(
-		"**",
+		'**',
 		express.static(browserDistFolder, {
-			maxAge: "1y",
-			index: "index.html",
+			maxAge: '1y',
+			index: 'index.html',
 		}),
 	);
 
 	// All regular routes use the Angular engine
-	server.get("**", (req, res, next) => {
+	server.get('**', (req, res, next) => {
 		const { protocol, originalUrl, baseUrl, headers } = req;
 
 		commonEngine
@@ -61,7 +61,7 @@ export function app(): express.Express {
 
 function run(): void {
 	// biome-ignore lint/complexity/useLiteralKeys: TS4111: Property 'PORT' comes from an index signature, so it must be accessed with ['PORT']. [plugin angular-compiler]
-	const port = process.env["PORT"] || 4000;
+	const port = process.env['PORT'] || 4000;
 
 	// Start up the Node server
 	const server = app();

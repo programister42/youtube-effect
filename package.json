@@ -8,7 +8,7 @@
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
 		"serve:ssr:youtube-effect": "node dist/youtube-effect/server/server.mjs",
-		"biome": "bunx biome check --write ./src"
+		"reformat": "bun prettier . --write"
 	},
 	"private": true,
 	"dependencies": {
@@ -31,7 +31,6 @@
 		"@angular-devkit/build-angular": "^18.2.1",
 		"@angular/cli": "^18.2.1",
 		"@angular/compiler-cli": "^18.2.0",
-		"@biomejs/biome": "1.8.3",
 		"@types/express": "^4.17.17",
 		"@types/jasmine": "~5.1.0",
 		"@types/node": "^18.18.0",
@@ -41,6 +40,7 @@
 		"karma-coverage": "~2.2.0",
 		"karma-jasmine": "~5.1.0",
 		"karma-jasmine-html-reporter": "~2.1.0",
+		"prettier": "3.3.3",
 		"typescript": "~5.5.2"
 	}
 }
