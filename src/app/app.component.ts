@@ -1,13 +1,12 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { SearchComponent } from "./search/search.component";
 
 @Component({
 	selector: "ye-root",
-	standalone: true,
-	imports: [RouterOutlet],
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
+	standalone: true,
+	imports: [RouterOutlet, SearchComponent],
 })
-export class AppComponent {
-	title = "youtube-effect";
-}
+export class AppComponent {}

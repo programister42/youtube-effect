@@ -1,8 +1,10 @@
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { APP_BASE_HREF } from "@angular/common";
 import { CommonEngine } from "@angular/ssr";
 import express from "express";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { API_PATHS } from "./src/app/constants/api-paths";
+import type { Video } from "./src/app/types/video.interface";
 import bootstrap from "./src/main.server";
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -19,6 +21,16 @@ export function app(): express.Express {
 
 	// Example Express Rest API endpoints
 	// server.get('/api/**', (req, res) => { });
+
+	server.get(API_PATHS.searchVideos, (req, res) => {
+		let id = 0;
+		const videos: Video[] = Array.from({ length: 5 }, () => ({
+			id: id++,
+			title: `Video ${id}`,
+		}));
+		res.json(videos);
+	});
+
 	// Serve static files from /browser
 	server.get(
 		"**",

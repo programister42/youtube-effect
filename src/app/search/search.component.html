@@ -1,0 +1,6 @@
+<h1>{{selectedVideo || "Not selected"}}</h1>
+<p-autoComplete
+	[(ngModel)]="selectedVideo"
+	[suggestions]="(videoSuggestions | async) ?? []"
+	(completeMethod)="completeMethod($event)"
+/>
