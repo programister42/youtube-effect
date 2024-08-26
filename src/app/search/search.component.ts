@@ -1,12 +1,16 @@
-import { AsyncPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { Subject, map, switchMap } from 'rxjs';
-import { API_PATHS } from '../constants/api-paths';
-import type { Video } from '../types/video.interface';
+import {
+	Subject,
+	debounceTime,
+	distinctUntilChanged,
+	map,
+	switchMap,
+} from 'rxjs';
+import { injectTrpcClient } from '../providers/trpc-client';
 
 @Component({
 	selector: 'ye-search',
@@ -14,10 +18,10 @@ import type { Video } from '../types/video.interface';
 	styleUrl: './search.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
-	imports: [AsyncPipe, FormsModule, AutoCompleteModule],
+	imports: [AsyncPipe, JsonPipe, FormsModule, AutoCompleteModule],
 })
 export class SearchComponent {
-	#httpClient = inject(HttpClient);
+	#trpcClient = injectTrpcClient();
 
 	#query = new Subject<string>();
 
@@ -25,6 +29,8 @@ export class SearchComponent {
 
 	videos = this.#query.pipe(
 		takeUntilDestroyed(),
+		debounceTime(500),
+		distinctUntilChanged(),
 		switchMap((query) => this.#searchVideos(query)),
 	);
 
@@ -33,9 +39,10 @@ export class SearchComponent {
 	);
 
 	#searchVideos(query: string) {
-		return this.#httpClient.get<Video[]>(
-			`${API_PATHS.searchVideos}?q=${query}`,
-		);
+		return this.#trpcClient.searchVideos.query({
+			q: query,
+			count: 5,
+		});
 	}
 
 	completeMethod(event: { query: string }) {

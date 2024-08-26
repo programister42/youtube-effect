@@ -1,11 +1,15 @@
+import 'dotenv/config';
+
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr';
 import express from 'express';
-import { API_PATHS } from './src/app/constants/api-paths';
-import type { Video } from './src/app/types/video.interface';
 import bootstrap from './src/main.server';
+import * as trpcExpress from '@trpc/server/adapters/express';
+import { appRouter } from './src/server';
+import { createContext } from './src/server/trpc';
+import { API_PATH } from './src/app/constants/api-path';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -22,14 +26,13 @@ export function app(): express.Express {
 	// Example Express Rest API endpoints
 	// server.get('/api/**', (req, res) => { });
 
-	server.get(API_PATHS.searchVideos, (req, res) => {
-		let id = 0;
-		const videos: Video[] = Array.from({ length: 5 }, () => ({
-			id: id++,
-			title: `Video ${id}`,
-		}));
-		res.json(videos);
-	});
+	server.use(
+		API_PATH,
+		trpcExpress.createExpressMiddleware({
+			router: appRouter,
+			createContext,
+		}),
+	);
 
 	// Serve static files from /browser
 	server.get(
